@@ -446,13 +446,13 @@ jobs:
 
             if grep -q 'KERNELVERSION.*scm_version' "$path"; then
               echo "Detected NEW setlocalversion format"
-              sed -i "s|echo \"\${KERNELVERSION}.*scm_version}\"|echo \"\${KERNELVERSION}-${KANDROID_VERSION}-${SUFFIX}\"|" "$path"
+              sed -i "s|echo \"\${KERNELVERSION}.*scm_version}\"|echo \"\${KERNELVERSION}-${SUFFIX}\"|" "$path"
 
             elif grep -q 'echo "\$res"' "$path"; then
               echo "Detected OLD setlocalversion format"
               if [ "$FAST_BUILD" = "true" ]; then
                 echo "FAST_BUILD enabled: using static res"
-                sed -i "s/^res=.*/res=\"-${KANDROID_VERSION}-${SUFFIX}\"/" "$path"
+                sed -i "s/^res=.*/res=\"-${SUFFIX}\"/" "$path"
               else
                 echo "Standard build: injecting suffix via cut/echo"
                 if [[ -f ./kernel_platform/build_with_bazel.py ]]; then
@@ -500,13 +500,13 @@ jobs:
 
             if grep -q 'KERNELVERSION.*scm_version' "$path"; then
               echo "Detected NEW setlocalversion format"
-              sed -i "s|echo \"\${KERNELVERSION}.*scm_version}\"|echo \"\${KERNELVERSION}-${KANDROID_VERSION}-${RANDOM_SUFFIX}\"|" "$path"
+              sed -i "s|echo \"\${KERNELVERSION}.*scm_version}\"|echo \"\${KERNELVERSION}-${RANDOM_SUFFIX}\"|" "$path"
 
             elif grep -q 'echo "\$res"' "$path"; then
               echo "Detected OLD setlocalversion format"
               if [ "$FAST_BUILD" = "true" ]; then
                 echo "FAST_BUILD enabled: using static res with random suffix"
-                sed -i "s/^res=.*/res=\"-${KANDROID_VERSION}-${RANDOM_SUFFIX}\"/" "$path"
+                sed -i "s/^res=.*/res=\"-${RANDOM_SUFFIX}\"/" "$path"
               else
                 echo "Standard build: injecting random suffix via cut/echo"
                 tac "$path" | sed "0,/echo \"\\\$res\"/s//res=\\\$(echo \\\$res | cut -d- -f1-2)-${RANDOM_SUFFIX}; echo \"\\\$res\";/" | tac > "$path.tmp" && mv "$path.tmp" "$path"
